@@ -1,0 +1,29 @@
+
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020. All rights reserved.
+ * secGear is licensed under the Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *     http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+ * PURPOSE.
+ * See the Mulan PSL v2 for more details.
+ */
+
+enclave {
+    include "stdbool.h"
+    include "secgear_urts.h"
+    from "secgear_tstdc.edl" import *; 
+    trusted {
+        public int __secure_key_exchange_impl([in, size=in_key_len] char* in_key, int in_key_len, [out, size=out_key_len] char* out_key, int out_key_len, [out, size=out_sealed_shared_key_len] char *out_sealed_shared_key, int out_sealed_shared_key_len, [out, size=out_key_signature_len]char* out_key_signature, int out_key_signature_len);
+        public int __secure_llm_inference_impl([in, size=in_prompt_len] char* in_prompt, int in_prompt_len, int n_predict, [out, size=1024] char* out_res);
+    };
+    untrusted {
+        size_t __insecure_read_file_impl(size_t f, size_t size, size_t n, [out, size=out_buffer_len] char* out_buffer, int out_buffer_len);
+        size_t __insecure_close_file_impl(size_t f);
+        size_t __insecure_open_file_impl([in, out, size=filename_len] char* filename, int filename_len);
+        long __insecure_tell_file_impl(size_t f);
+        int __insecure_seek_file_impl(size_t f, long offset, int whence);
+    };
+};
